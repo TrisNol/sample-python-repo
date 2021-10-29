@@ -1,0 +1,13 @@
+name: Build Documentation
+
+on: [push]
+jobs:
+
+  build_documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - run: pip install sphinx
+      - run: cd ./docs
+      - run: make html
