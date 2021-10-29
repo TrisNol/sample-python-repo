@@ -10,4 +10,4 @@ jobs:
       - uses: actions/setup-python@v2
       - run: pip install sphinx
       - run: cd ./docs
-      - run: make.bat html
+      - run: sphinx-build ./ ./_build
