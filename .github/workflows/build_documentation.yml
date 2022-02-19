@@ -8,12 +8,16 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+
       - name: setup python
         uses: actions/setup-python@v2
+
       - name: install dependencies
         run: pip install -r ./docs/requirements.txt
+
       - name: build documentation
         run: sphinx-build ./docs ./docs/_build
+        
       - name: Commit files # commit the output folder
         run: |
           git config --local user.email "TrisNol@users.noreply.github.com"
