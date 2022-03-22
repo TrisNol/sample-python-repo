@@ -16,15 +16,30 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Install testing/linting dependencies
-        run: pip install bandit black codespell flake8 isort mypy pytest pyupgrade safety
+        run: pip install bandit black codespell flake8 isort mypy pytest pyupgrade safety coverage
 
-      - run: bandit --recursive --skip B101 . || true  # B101 is assert statements
-      - run: black --check . || true
-      - run: codespell || true  # --ignore-words-list="" --skip=""
-      - run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-      - run: flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --show-source --statistics
-      - run: isort --check-only --profile black . || true
-      - run: mypy --install-types --non-interactive . || true
-      - run: pytest . || true
-      - run: pytest --doctest-modules . || true
-      - run: safety check --full-report --ignore=44715 
+      - name: Scan for security issues with Bandit
+      - run: bandit --recursive --skip B101 . # B101 is assert statements
+
+      - name: Lint with Flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --show-source --statistics
+
+      - run: safety check --full-report --ignore=44715 --output safety-check.txt || true
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: safety-check-results
+          path: safety-check.txt
+
+      - name: Determine test coverage
+        run: |
+          coverage run -m pytest .
+          coverage report -m --fail-under=60
+          coverage html
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test-coverage-results
+          path: htmlcov/
