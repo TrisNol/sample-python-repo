@@ -1,0 +1,45 @@
+name: Lint and test Python
+
+on: [pull_request, push]
+jobs:
+
+  lint_python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Python setup
+        uses: actions/setup-python@v2
+
+      - name: Install project dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install testing/linting dependencies
+        run: pip install bandit flake8 pytest pyupgrade safety coverage
+
+      - name: Scan for security issues with Bandit
+        run: bandit --recursive --skip B101 . # B101 is assert statements
+
+      - name: Lint with Flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --show-source --statistics
+
+      - run: safety check --full-report --ignore=44715 --output safety-check.txt || true
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: safety-check-results
+          path: safety-check.txt
+
+      - name: Determine test coverage
+        run: |
+          coverage run -m pytest .
+          coverage report -m --fail-under=60
+          coverage html
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test-coverage-results
+          path: htmlcov/
