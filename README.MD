@@ -11,7 +11,7 @@ The code of this repo will be linted with [PyLint](https://pylint.org/) automati
 You can add your tests in the test/ directory. By providing the prefix test_ the files will be recognized and executed by PyTest.
 
 ## Documentation
-The documentation is created with the help of [Sphinx](https://www.sphinx-doc.org/en/master/), which generates a html-based docu that is exposed via GitHub pages.
+The documentation is created with the help of [Sphinx](https://www.sphinx-doc.org/en/master/), which generates a html-based docu that is exposed via GitHub pages. In order to see the documentation, some configuration in GitHub needs to be done. Head to the repo´s settings and enable GitHub pages. Set the source to branch `gh-pages`. The documentation should now be hosted at `http[s]:<username>.github.io/<repo-name>`
 
 In order to adapt the config, change the specifics in ```./docs/conf.py```.
 To manually build the documentation execute the following command - and install sphinx if you haven´t already - ```sphinx-build ./docs ./docs/_build```.
