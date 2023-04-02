@@ -1,3 +1,6 @@
 # Add other libraries here - the following is just a placeholder
 numpy==1.22.2
 pandas==1.4.1
+mkdocs-material
+mkdocstrings
+mkdocstrings-python
